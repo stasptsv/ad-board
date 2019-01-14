@@ -40,7 +40,13 @@
 					</v-card-text>
 					<v-card-actions>
 						<v-spacer></v-spacer>
-						<v-btn @click="onSubmit" color="primary" :disabled="!valid">Create account</v-btn>
+						<v-btn 
+							@click="onSubmit" 
+							color="primary" 
+							:disabled="!valid || loading" 
+							:loading="loading">
+							Create account
+						</v-btn>
 					</v-card-actions>
 				</v-card>
 			</v-flex>
@@ -70,6 +76,12 @@ export default {
 			]
 		}
 	},
+
+	computed: {
+		loading() {
+			return this.$store.getters.loading
+		}
+	},
 	
 	methods: {
 		onSubmit() {
@@ -80,7 +92,11 @@ export default {
 					password: this.password
 				}
 
-				console.log(user)
+				this.$store.dispatch('registerUser', user)
+					.then(() => {
+						this.$router.push('/')
+					})
+					.catch(err => console.log(err))
 			}
 		}
 	}
